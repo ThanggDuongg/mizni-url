@@ -6,5 +6,6 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Shared\Shared.csproj" />
+    <Compile Include="..\Shared\GlobalUsings.cs" Link="GlobalUsings.cs" />
   </ItemGroup>
 </Project>
