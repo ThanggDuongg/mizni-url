@@ -1,4 +1,4 @@
-﻿namespace Application.Exceptions
+﻿namespace Shared.Exceptions
 {
   public class BusinessException : Exception
   {

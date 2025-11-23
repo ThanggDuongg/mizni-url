@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+﻿using Infrastructure.Persistence;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 
 namespace WebAPI.Extensions
 {
@@ -6,7 +7,7 @@ namespace WebAPI.Extensions
   {
     public static IServiceCollection AddApplicationHealthChecks(this IServiceCollection services)
     {
-      services.AddHealthChecks();
+      services.AddHealthChecks().AddCheck<PersistenceHealthCheck>("persistence");
       return services;
     }
 

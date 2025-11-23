@@ -8,4 +8,7 @@
     <ProjectReference Include="..\Shared\Shared.csproj" />
     <Compile Include="..\Shared\GlobalUsings.cs" Link="GlobalUsings.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="MongoDB.Bson" Version="3.5.0" />
+  </ItemGroup>
 </Project>

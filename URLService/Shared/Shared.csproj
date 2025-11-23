@@ -4,4 +4,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="HtmlSanitizer" Version="9.0.886" />
+    <PackageReference Include="MongoDB.Bson" Version="3.5.0" />
+  </ItemGroup>
 </Project>

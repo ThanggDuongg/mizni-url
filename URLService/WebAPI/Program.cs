@@ -1,11 +1,14 @@
-using System.Text.Json.Serialization;
+using Infrastructure.Extensions;
 using WebAPI.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder
-  .Services.AddHttpContextAccessor()
+  .Services.AddAppSettingsConfiguration(builder.Configuration)
+  .AddProblemDetails()
+  .AddHttpContextAccessor()
   .AddEndpointsApiExplorer()
+  .AddPersistenceConfiguration()
   .AddControllers()
   .AddJsonOptions(options =>
   {
@@ -31,6 +34,7 @@ builder.Services.AddRouting(options =>
 });
 
 var app = builder.Build();
+await app.EnsureDatabaseCreatedAsync();
 
 app.UseApplicationMiddlewares(app.Environment);
 
