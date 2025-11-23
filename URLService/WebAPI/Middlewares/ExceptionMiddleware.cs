@@ -1,5 +1,4 @@
-﻿using Application.Exceptions;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace WebAPI.Middlewares
 {

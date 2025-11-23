@@ -28,5 +28,10 @@
     {
       public const string ROUTE = "/profiler";
     }
+
+    public struct MessageTemplate
+    {
+      public const string NOT_FOUND = "Entity type={0}, id={1} is not found";
+    }
   }
 }
