@@ -34,11 +34,14 @@ namespace Application.Behaviors
         ?? Guid.NewGuid().ToString();
       context.CorrelationId = correlationId;
 
-      logger.LogInformation(
-        "START: {MessageType} | CorrelationId: {CorrelationId}",
-        messageType,
-        correlationId
-      );
+      if (logger.IsEnabled(LogLevel.Information))
+      {
+        logger.LogInformation(
+          "START: {MessageType} | CorrelationId: {CorrelationId}",
+          messageType,
+          correlationId
+        );
+      }
 
       var tracker = new ExecutionTracker
       {
@@ -59,30 +62,39 @@ namespace Application.Behaviors
 
       if (elapsedMs > CRITICAL_THRESHOLD_MS)
       {
-        logger.LogWarning(
-          "FINISH (CRITICAL): {MessageType} took {ElapsedMs}ms | CorrelationId: {CorrelationId}",
-          tracker.MessageType,
-          elapsedMs,
-          tracker.CorrelationId
-        );
+        if (logger.IsEnabled(LogLevel.Warning))
+        {
+          logger.LogWarning(
+            "FINISH (CRITICAL): {MessageType} took {ElapsedMs}ms | CorrelationId: {CorrelationId}",
+            tracker.MessageType,
+            elapsedMs,
+            tracker.CorrelationId
+          );
+        }
       }
       else if (elapsedMs > WARNING_THRESHOLD_MS)
       {
-        logger.LogWarning(
-          "FINISH (SLOW): {MessageType} took {ElapsedMs}ms | CorrelationId: {CorrelationId}",
-          tracker.MessageType,
-          elapsedMs,
-          tracker.CorrelationId
-        );
+        if (logger.IsEnabled(LogLevel.Warning))
+        {
+          logger.LogWarning(
+            "FINISH (SLOW): {MessageType} took {ElapsedMs}ms | CorrelationId: {CorrelationId}",
+            tracker.MessageType,
+            elapsedMs,
+            tracker.CorrelationId
+          );
+        }
       }
       else
       {
-        logger.LogInformation(
-          "FINISH: {MessageType} took {ElapsedMs}ms | CorrelationId: {CorrelationId}",
-          tracker.MessageType,
-          elapsedMs,
-          tracker.CorrelationId
-        );
+        if (logger.IsEnabled(LogLevel.Information))
+        {
+          logger.LogInformation(
+            "FINISH: {MessageType} took {ElapsedMs}ms | CorrelationId: {CorrelationId}",
+            tracker.MessageType,
+            elapsedMs,
+            tracker.CorrelationId
+          );
+        }
       }
     }
 
@@ -91,12 +103,15 @@ namespace Application.Behaviors
       if (tracker.Stopwatch.IsRunning)
       {
         tracker.Stopwatch.Stop();
-        logger.LogError(
-          "FAILED: {MessageType} took {ElapsedMs}ms | CorrelationId: {CorrelationId}",
-          tracker.MessageType,
-          tracker.Stopwatch.ElapsedMilliseconds,
-          tracker.CorrelationId
-        );
+        if (logger.IsEnabled(LogLevel.Error))
+        {
+          logger.LogError(
+            "FAILED: {MessageType} took {ElapsedMs}ms | CorrelationId: {CorrelationId}",
+            tracker.MessageType,
+            tracker.Stopwatch.ElapsedMilliseconds,
+            tracker.CorrelationId
+          );
+        }
       }
 
       tracker.LogContextScope?.Dispose();

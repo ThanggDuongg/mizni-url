@@ -12,7 +12,7 @@ namespace WebAPI.Middlewares
   {
     private static readonly string[] _excludedPrefixes =
     {
-      "/swagger",
+      "/scalar",
       "/health",
       "/grid",
       "/search",
@@ -33,7 +33,10 @@ namespace WebAPI.Middlewares
       }
       catch (AntiforgeryValidationException ex)
       {
-        logger.LogWarning(ex, "Invalid CSRF token for path: {Path}", context.Request.Path);
+        if (logger.IsEnabled(LogLevel.Warning))
+        {
+          logger.LogWarning(ex, "Invalid CSRF token for path: {Path}", context.Request.Path);
+        }
         context.Response.StatusCode = StatusCodes.Status400BadRequest;
         context.Response.ContentType = "application/json";
         await context.Response.WriteAsync("Invalid CSRF token.");

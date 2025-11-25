@@ -31,7 +31,7 @@ namespace WebAPI.Extensions
         });
 
       applicationBuilder.UseWhen(
-        context => !context.Request.Path.StartsWithSegments("/swagger"),
+        context => !context.Request.Path.StartsWithSegments("/scalar"),
         app => app.UseSecurityHeaders(policy)
       );
 

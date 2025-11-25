@@ -20,7 +20,6 @@ namespace WebAPI.Extensions
         .UseAuthorization()
         .UseMiniProfiler()
         .UseMiniLog(env.ContentRootPath)
-        .UseApiDocumentSupport(env)
         .UseCacheControlHeaderMiddleware();
 
       return app;

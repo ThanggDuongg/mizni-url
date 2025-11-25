@@ -21,6 +21,6 @@ namespace Domain.Entities.Abstracts
     [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
     public DateTime ModifiedOn { get; set; }
 
-    public long RowVersion { get; set; }
+    public long Version { get; set; }
   }
 }

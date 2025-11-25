@@ -78,7 +78,7 @@ namespace Infrastructure.Extensions
         .ToArray();
       foreach (var clrType in appliedOnClrTypes)
       {
-        modelBuilder.Entity(clrType).Property(nameof(IVersioning.RowVersion)).IsRowVersion();
+        modelBuilder.Entity(clrType).Property(nameof(IVersioning.Version)).IsRowVersion();
       }
     }
 

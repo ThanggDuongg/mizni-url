@@ -19,8 +19,10 @@
     {
       public const string VERSION = "v1";
       public const string TITLE = "MIZNI URL";
-      public const string ROUTE_PREFIX = "swagger";
-      public const string ENDPOINT_URL = "/swagger/v1/swagger.json";
+      public const string DESCRIPTION = """
+        Mizni URL is a tool to shorten a long link and create a short URL easy to share on sites, chat and emails. 
+        Track short URL traffic and manage your links.
+        """;
       public const string ENDPOINT_NAME = "MIZNI v1";
     }
 
