@@ -1,4 +1,5 @@
-﻿using Infrastructure.Persistence;
+﻿using Domain.Entities;
+using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -17,59 +18,7 @@ namespace Infrastructure.Extensions
       {
         var settings = serviceProvider.GetRequiredService<IOptions<MongoDbSettings>>().Value;
         var logger = serviceProvider.GetRequiredService<ILogger<UrlContext>>();
-        var mongoSettings = MongoClientSettings.FromConnectionString(settings.ConnectionString);
-
-        mongoSettings.RetryWrites = true;
-        mongoSettings.RetryReads = true;
-        mongoSettings.ServerSelectionTimeout = TimeSpan.FromSeconds(settings.CommandTimeout);
-        mongoSettings.ClusterConfigurator = cb =>
-        {
-          cb.Subscribe<CommandStartedEvent>(e =>
-          {
-            if (settings.EnableSensitiveDataLogging)
-            {
-              logger.LogDebug(
-                "MongoDB Command Started: {CommandName} - {Command}",
-                e.CommandName,
-                e.Command
-              );
-            }
-          });
-
-          cb.Subscribe<CommandSucceededEvent>(e =>
-          {
-            var duration = e.Duration.TotalMilliseconds;
-
-            if (duration > settings.SlowQueryThresholdMs)
-            {
-              logger.LogWarning(
-                "Slow Query Detected: {CommandName} took {Duration}ms (Threshold: {Threshold}ms) - RequestId: {RequestId}",
-                e.CommandName,
-                duration,
-                settings.SlowQueryThresholdMs,
-                e.RequestId
-              );
-            }
-            else if (settings.EnableSensitiveDataLogging)
-            {
-              logger.LogInformation(
-                "MongoDB Command Succeeded: {CommandName} in {Duration}ms",
-                e.CommandName,
-                duration
-              );
-            }
-          });
-
-          cb.Subscribe<CommandFailedEvent>(e =>
-          {
-            logger.LogError(
-              e.Failure,
-              "MongoDB Command Failed: {CommandName} - Duration: {Duration}ms",
-              e.CommandName,
-              e.Duration.TotalMilliseconds
-            );
-          });
-        };
+        var mongoSettings = CreateMongoClientSettings(settings, logger);
 
         return new MongoClient(mongoSettings);
       });
@@ -93,6 +42,94 @@ namespace Infrastructure.Extensions
       return services;
     }
 
+    private static MongoClientSettings CreateMongoClientSettings(
+      MongoDbSettings settings,
+      ILogger logger
+    )
+    {
+      var mongoSettings = MongoClientSettings.FromConnectionString(settings.ConnectionString);
+
+      mongoSettings.RetryWrites = true;
+      mongoSettings.RetryReads = true;
+      mongoSettings.ServerSelectionTimeout = TimeSpan.FromSeconds(settings.CommandTimeout);
+      mongoSettings.ClusterConfigurator = x =>
+      {
+        x.Subscribe<CommandStartedEvent>(e =>
+        {
+          LogCommandStarted(settings, logger, e);
+        });
+
+        x.Subscribe<CommandSucceededEvent>(e =>
+        {
+          LogCommandSucceeded(settings, logger, e);
+        });
+
+        x.Subscribe<CommandFailedEvent>(e =>
+        {
+          LogCommandFailed(logger, e);
+        });
+      };
+
+      return mongoSettings;
+    }
+
+    private static void LogCommandStarted(
+      MongoDbSettings settings,
+      ILogger logger,
+      CommandStartedEvent e
+    )
+    {
+      if (settings.EnableSensitiveDataLogging && logger.IsEnabled(LogLevel.Debug))
+      {
+        logger.LogDebug(
+          "MongoDB Command Started: {CommandName} - {Command}",
+          e.CommandName,
+          settings.EnableSensitiveDataLogging ? e.Command : null
+        );
+      }
+    }
+
+    private static void LogCommandSucceeded(
+      MongoDbSettings settings,
+      ILogger logger,
+      CommandSucceededEvent e
+    )
+    {
+      var duration = e.Duration.TotalMilliseconds;
+
+      if (duration > settings.SlowQueryThresholdMs && logger.IsEnabled(LogLevel.Warning))
+      {
+        logger.LogWarning(
+          "Slow Query Detected: {CommandName} took {Duration}ms (Threshold: {Threshold}ms) - RequestId: {RequestId}",
+          e.CommandName,
+          duration,
+          settings.SlowQueryThresholdMs,
+          e.RequestId
+        );
+      }
+      else if (settings.EnableSensitiveDataLogging && logger.IsEnabled(LogLevel.Information))
+      {
+        logger.LogInformation(
+          "MongoDB Command Succeeded: {CommandName} in {Duration}ms",
+          e.CommandName,
+          duration
+        );
+      }
+    }
+
+    private static void LogCommandFailed(ILogger logger, CommandFailedEvent e)
+    {
+      if (logger.IsEnabled(LogLevel.Error))
+      {
+        logger.LogError(
+          e.Failure,
+          "MongoDB Command Failed: {CommandName} - Duration: {Duration}ms",
+          e.CommandName,
+          e.Duration.TotalMilliseconds
+        );
+      }
+    }
+
     public static async Task<IHost> EnsureDatabaseCreatedAsync(this IHost host)
     {
       using var scope = host.Services.CreateScope();
@@ -106,11 +143,14 @@ namespace Infrastructure.Extensions
       }
       catch (Exception ex)
       {
-        logger.LogError(
-          ex,
-          "Error ensuring database exists. Exception: {ExceptionMessage}",
-          ex.Message
-        );
+        if (logger.IsEnabled(LogLevel.Error))
+        {
+          logger.LogError(
+            ex,
+            "Error ensuring database exists. Exception: {ExceptionMessage}",
+            ex.Message
+          );
+        }
         throw new InvalidOperationException(
           "An error occurred while ensuring the database exists.",
           ex
@@ -122,19 +162,19 @@ namespace Infrastructure.Extensions
 
     private static async Task SeedDataAsync(UrlContext context)
     {
-      var collection = context.GetCollection<Domain.Entities.UrlEntry>();
       var demoUrl = $"https://leetcode.com/";
-      var exists = await collection.Find(_ => true).AnyAsync();
-      if (!exists)
+
+      var urlEntriesExists = await context.Get<UrlEntry>().AnyAsync();
+      if (!urlEntriesExists)
       {
-        var seed = new Domain.Entities.UrlEntry
+        var seedEntity = new UrlEntry
         {
           OriginalUrl = demoUrl,
           Code = "ltc",
           Expires = null,
         };
-
-        await collection.InsertOneAsync(seed);
+        await context.AddAsync(seedEntity);
+        await context.SaveChangesAsync();
       }
     }
   }

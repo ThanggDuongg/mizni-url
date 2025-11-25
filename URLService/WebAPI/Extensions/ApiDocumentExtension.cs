@@ -1,4 +1,4 @@
-﻿using Microsoft.OpenApi.Models;
+﻿using Scalar.AspNetCore;
 
 namespace WebAPI.Extensions
 {
@@ -6,29 +6,39 @@ namespace WebAPI.Extensions
   {
     public static IServiceCollection AddApiDocumentSupport(this IServiceCollection services)
     {
-      services.AddSwaggerGen(options =>
+      services.AddOpenApi(options =>
       {
-        options.SwaggerDoc(
-          ApiDocument.VERSION,
-          new OpenApiInfo { Title = ApiDocument.TITLE, Version = ApiDocument.VERSION }
+        options.AddDocumentTransformer(
+          (document, context, _) =>
+          {
+            document.Info = new()
+            {
+              Title = ApiDocument.TITLE,
+              Version = ApiDocument.VERSION,
+              Description = ApiDocument.DESCRIPTION,
+            };
+            return Task.CompletedTask;
+          }
         );
       });
 
       return services;
     }
 
-    public static IApplicationBuilder UseApiDocumentSupport(
-      this IApplicationBuilder app,
+    public static IEndpointRouteBuilder MapApiDocumentSupport(
+      this IEndpointRouteBuilder app,
       IWebHostEnvironment env
     )
     {
       if (env.IsDevelopment())
       {
-        app.UseSwagger();
-        app.UseSwaggerUI(options =>
+        app.MapOpenApi();
+        app.MapScalarApiReference(options =>
         {
-          options.RoutePrefix = ApiDocument.ROUTE_PREFIX;
-          options.SwaggerEndpoint(ApiDocument.ENDPOINT_URL, ApiDocument.ENDPOINT_NAME);
+          options
+            .WithTitle(ApiDocument.TITLE)
+            .WithTheme(ScalarTheme.Default)
+            .WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.HttpClient);
         });
       }
 

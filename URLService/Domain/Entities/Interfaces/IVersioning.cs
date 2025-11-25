@@ -2,6 +2,6 @@
 {
   public interface IVersioning
   {
-    long RowVersion { get; set; }
+    long Version { get; set; }
   }
 }

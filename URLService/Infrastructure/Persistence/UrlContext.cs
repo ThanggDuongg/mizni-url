@@ -145,13 +145,11 @@ namespace Infrastructure.Persistence
         switch (entityEntry.State)
         {
           case EntityState.Added:
-            entityEntry.Entity.RowVersion = 1;
+            entityEntry.Entity.Version = 1;
             break;
           case EntityState.Modified:
-            entityEntry.OriginalValues[nameof(IVersioning.RowVersion)] = entityEntry
-              .Entity
-              .RowVersion;
-            entityEntry.Entity.RowVersion += 1;
+            entityEntry.OriginalValues[nameof(IVersioning.Version)] = entityEntry.Entity.Version;
+            entityEntry.Entity.Version += 1;
             break;
         }
       }

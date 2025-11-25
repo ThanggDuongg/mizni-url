@@ -38,6 +38,7 @@ await app.EnsureDatabaseCreatedAsync();
 
 app.UseApplicationMiddlewares(app.Environment);
 
+app.MapApiDocumentSupport(app.Environment);
 app.MapApplicationHealthChecks();
 app.MapApiGroups();
 
