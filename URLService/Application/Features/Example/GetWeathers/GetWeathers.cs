@@ -8,7 +8,7 @@
     public string Summary { get; set; } = "";
   }
 
-  public record GetWeathersQuery(int Days);
+  public sealed record GetWeathersQuery(int Days);
 
   public static class GetWeathersQueryHandler
   {

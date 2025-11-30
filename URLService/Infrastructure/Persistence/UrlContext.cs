@@ -23,6 +23,7 @@ namespace Infrastructure.Persistence
     );
 
     public DbSet<UrlEntry> UrlEntries => Set<UrlEntry>();
+    public DbSet<Sequence> Sequences => Set<Sequence>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
