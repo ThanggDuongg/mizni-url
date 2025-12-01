@@ -8,6 +8,9 @@
     )
     {
       services.Configure<MongoDbSettings>(configurationManager.GetSection(nameof(MongoDbSettings)));
+      services.Configure<CodeGeneratorOptions>(
+        configurationManager.GetSection(nameof(CodeGeneratorOptions))
+      );
       return services;
     }
   }

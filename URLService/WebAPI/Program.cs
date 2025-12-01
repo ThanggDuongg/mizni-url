@@ -17,6 +17,8 @@ builder
 
 builder.AddSerilogLogging().AddWolverineFx();
 
+builder.Services.AddApplicationServices();
+
 builder
   .Services.AddMiniProfilerSupport(builder.Environment)
   .AddApiDocumentSupport()
