@@ -13,7 +13,16 @@ namespace Application.Services
     )
     {
       var sequences = context.GetCollection<Sequence>();
-      var update = Builders<Sequence>.Update.Inc(x => x.CurrentValue, 1);
+
+      var existing = await sequences
+        .Find(x => x.Name == sequenceName)
+        .FirstOrDefaultAsync(cancellationToken);
+
+      var version = existing?.Version ?? 0;
+
+      var update = Builders<Sequence>
+        .Update.Inc(x => x.CurrentValue, 1)
+        .Set(x => x.Version, version + 1);
       var options = new FindOneAndUpdateOptions<Sequence>
       {
         IsUpsert = true,
