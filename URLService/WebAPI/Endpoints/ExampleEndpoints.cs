@@ -15,9 +15,9 @@ namespace WebAPI.Endpoints
       group.MapPost("/", GetWeathers);
     }
 
-    private static async Task<IResult> GetWeathers(WeatherRequestDto dto, IMessageBus bus)
+    private static async Task<IResult> GetWeathers(GetWeathersRequestDto dto, IMessageBus bus)
     {
-      var result = await bus.InvokeAsync<WeatherDataDto>(dto.ToQuery());
+      var result = await bus.InvokeAsync<GetWeathersDataDto>(dto.ToQuery());
       return Results.Ok(result);
     }
   }

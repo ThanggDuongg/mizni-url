@@ -1,6 +1,6 @@
 ﻿namespace Application.Features.Example.GetWeathers
 {
-  public class WeatherRequestDto
+  public class GetWeathersRequestDto
   {
     public int Days { get; set; }
   }

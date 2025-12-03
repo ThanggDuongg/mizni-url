@@ -12,7 +12,7 @@
 
   public static class GetWeathersQueryHandler
   {
-    public static async Task<IEnumerable<WeatherDataDto>> Handle(GetWeathersQuery query)
+    public static async Task<IEnumerable<GetWeathersDataDto>> Handle(GetWeathersQuery query)
     {
       var weathers = Enumerable
         .Range(1, query.Days)
