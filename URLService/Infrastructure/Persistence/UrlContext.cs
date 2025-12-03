@@ -96,13 +96,13 @@ namespace Infrastructure.Persistence
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
       await SetAuditData();
-      await AdaptRowVersion();
+      //await AdaptRowVersion();
       return await base.SaveChangesAsync(cancellationToken);
     }
 
     public async Task<int> SaveChangesNoAuditAsync(CancellationToken cancellationToken = default)
     {
-      await AdaptRowVersion();
+      //await AdaptRowVersion();
       return await base.SaveChangesAsync(cancellationToken);
     }
 
@@ -138,24 +138,24 @@ namespace Infrastructure.Persistence
       return _mongoDatabase.GetCollection<T>(collectionName);
     }
 
-    private Task AdaptRowVersion()
-    {
-      var auditEntries = ChangeTracker.Entries<IVersioning>();
-      foreach (var entityEntry in auditEntries.Where(x => x?.Entity is not null))
-      {
-        switch (entityEntry.State)
-        {
-          case EntityState.Added:
-            entityEntry.Entity.Version = 1;
-            break;
-          case EntityState.Modified:
-            entityEntry.OriginalValues[nameof(IVersioning.Version)] = entityEntry.Entity.Version;
-            entityEntry.Entity.Version += 1;
-            break;
-        }
-      }
-      return Task.CompletedTask;
-    }
+    //private Task AdaptRowVersion()
+    //{
+    //  var auditEntries = ChangeTracker.Entries<IVersioning>();
+    //  foreach (var entityEntry in auditEntries.Where(x => x?.Entity is not null))
+    //  {
+    //    switch (entityEntry.State)
+    //    {
+    //      case EntityState.Added:
+    //        entityEntry.Entity.Version = 1;
+    //        break;
+    //      case EntityState.Modified:
+    //        entityEntry.OriginalValues[nameof(IVersioning.Version)] = entityEntry.Entity.Version;
+    //        entityEntry.Entity.Version += 1;
+    //        break;
+    //    }
+    //  }
+    //  return Task.CompletedTask;
+    //}
 
     private async Task SetAuditData()
     {
