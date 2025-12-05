@@ -1,5 +1,7 @@
-﻿using Application.Features.EntryUrl.CreateEntryUrl;
-using Application.Features.EntryUrl.DeleteEntryUrl;
+﻿using Application.Features.UrlEntries.CreateUrlEntry;
+using Application.Features.UrlEntries.DeleteUrlEntry;
+using Application.Features.UrlEntries.GetUrlEntry;
+using Application.Features.UrlEntries.UpdateUrlEntry;
 using Wolverine;
 
 namespace WebAPI.Endpoints
@@ -14,7 +16,35 @@ namespace WebAPI.Endpoints
         .WithTags("UrlEntry");
 
       group.MapPost("/", CreateUrlEntry);
+      group.MapPut("/", UpdateUrlEntry);
       group.MapDelete("/{code}", DeleteUrlEntry);
+      group.MapGet("/{code}", GetUrlEntry);
+    }
+
+    private static async Task<IResult> UpdateUrlEntry(
+      UpdateUrlEntryRequestDto dto,
+      IMessageBus bus,
+      CancellationToken cancellationToken = default
+    )
+    {
+      await bus.InvokeAsync<bool>(dto.ToCommand(), cancellationToken);
+      return Results.NoContent();
+    }
+
+    private static async Task<IResult> GetUrlEntry(
+      string code,
+      IMessageBus bus,
+      CancellationToken cancellationToken = default
+    )
+    {
+      var url = await bus.InvokeAsync<string?>(new GetUrlEntryQuery(code), cancellationToken);
+
+      if (url is null)
+      {
+        return Results.NotFound();
+      }
+
+      return Results.Redirect(url, permanent: false);
     }
 
     private static async Task<IResult> DeleteUrlEntry(
@@ -23,17 +53,17 @@ namespace WebAPI.Endpoints
       CancellationToken cancellationToken = default
     )
     {
-      await bus.InvokeAsync(new DeleteEntryUrlCommand(code), cancellationToken);
+      await bus.InvokeAsync(new DeleteUrlEntryCommand(code), cancellationToken);
       return Results.NoContent();
     }
 
     private static async Task<IResult> CreateUrlEntry(
-      CreateEntryUrlRequestDto dto,
+      CreateUrlEntryRequestDto dto,
       IMessageBus bus,
       CancellationToken cancellationToken = default
     )
     {
-      var result = await bus.InvokeAsync<CreateEntryUrlDataDto>(dto.ToCommand(), cancellationToken);
+      var result = await bus.InvokeAsync<CreateUrlEntryDataDto>(dto.ToCommand(), cancellationToken);
       return Results.Ok(result);
     }
   }

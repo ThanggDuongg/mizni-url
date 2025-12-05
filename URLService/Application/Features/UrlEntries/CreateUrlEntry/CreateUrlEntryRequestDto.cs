@@ -1,6 +1,6 @@
-﻿namespace Application.Features.EntryUrl.CreateEntryUrl
+﻿namespace Application.Features.UrlEntries.CreateUrlEntry
 {
-  public class CreateEntryUrlRequestDto
+  public class CreateUrlEntryRequestDto
   {
     public string OriginalUrl { get; set; } = default!;
 

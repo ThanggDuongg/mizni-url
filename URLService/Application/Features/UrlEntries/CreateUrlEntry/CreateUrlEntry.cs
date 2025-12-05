@@ -2,14 +2,14 @@
 using Domain.Entities;
 using Infrastructure.Persistence;
 
-namespace Application.Features.EntryUrl.CreateEntryUrl
+namespace Application.Features.UrlEntries.CreateUrlEntry
 {
-  public sealed record CreateEntryUrlCommand(string OriginalUrl, DateTime? Expires);
+  public sealed record CreateUrlEntryCommand(string OriginalUrl, DateTime? Expires);
 
-  public static class CreateEntryUrlCommandHandler
+  public static class CreateUrlEntryCommandHandler
   {
-    public static async Task<CreateEntryUrlDataDto> Handle(
-      CreateEntryUrlCommand command,
+    public static async Task<CreateUrlEntryDataDto> Handle(
+      CreateUrlEntryCommand command,
       ISequenceService sequenceService,
       ICodeGenerator codeGenerator,
       IUrlContext urlContext,

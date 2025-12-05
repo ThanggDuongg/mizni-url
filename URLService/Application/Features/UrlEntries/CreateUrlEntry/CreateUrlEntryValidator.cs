@@ -1,10 +1,10 @@
 ﻿using FluentValidation;
 
-namespace Application.Features.EntryUrl.CreateEntryUrl
+namespace Application.Features.UrlEntries.CreateUrlEntry
 {
-  public class CreateEntryUrlValidator : AbstractValidator<CreateEntryUrlCommand>
+  public class CreateUrlEntryValidator : AbstractValidator<CreateUrlEntryCommand>
   {
-    public CreateEntryUrlValidator()
+    public CreateUrlEntryValidator()
     {
       RuleFor(x => x.OriginalUrl)
         .NotEmpty()

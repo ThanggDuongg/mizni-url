@@ -2,14 +2,14 @@
 using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
-namespace Application.Features.EntryUrl.DeleteEntryUrl
+namespace Application.Features.UrlEntries.DeleteUrlEntry
 {
-  public sealed record DeleteEntryUrlCommand(string Code);
+  public sealed record DeleteUrlEntryCommand(string Code);
 
-  public static class DeleteEntryUrlCommandHandler
+  public static class DeleteUrlEntryCommandHandler
   {
     public static async Task Handle(
-      DeleteEntryUrlCommand command,
+      DeleteUrlEntryCommand command,
       IUrlContext urlContext,
       CancellationToken cancellationToken
     )
