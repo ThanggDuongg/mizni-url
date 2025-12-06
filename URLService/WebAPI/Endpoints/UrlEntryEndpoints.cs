@@ -8,6 +8,13 @@ namespace WebAPI.Endpoints
 {
   public static class UrlEntryEndpoints
   {
+    public static IEndpointRouteBuilder MapShortUrlRedirect(this IEndpointRouteBuilder app)
+    {
+      app.MapGet("/{code}", GetUrlEntry).AllowAnonymous();
+
+      return app;
+    }
+
     public static void MapUrlEntryEndpoints(this IEndpointRouteBuilder app)
     {
       var group = app.MapGroup("/url-entry")

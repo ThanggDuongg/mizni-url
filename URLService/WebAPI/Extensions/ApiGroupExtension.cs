@@ -10,6 +10,7 @@ namespace WebAPI.Extensions
 
       api.MapExampleEndpoints();
       api.MapUrlEntryEndpoints();
+      app.MapShortUrlRedirect();
 
       return app;
     }
