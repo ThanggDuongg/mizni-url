@@ -5,12 +5,26 @@ services:
     restart: always
     ports:
       - "27020:27017"
-    environment:
-      MONGODB_INITDB_ROOT_USERNAME: root
-      MONGODB_INITDB_ROOT_PASSWORD: 123
-    volumes:
-      - ./Data/mongo-data:/data/db
-      - ./Data/mongo-config:/data/configdb
+    command: ["--replSet", "rs0", "--bind_ip_all"]
+    healthcheck:
+      test: |
+        mongosh --eval "
+        try {
+          rs.status();
+        } catch(e) {
+          rs.initiate({
+            _id: 'rs0',
+            members: [{ _id: 0, host: 'mongo:27017' }]
+          });
+        }
+        " --quiet
+      interval: 5s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    # volumes:
+    #   - ./Data/mongo-data:/data/db
+    #   - ./Data/mongo-config:/data/configdb
     networks:
       default:
         aliases:
@@ -23,15 +37,12 @@ services:
     ports:
       - "8081:8081"
     environment:
-      ME_CONFIG_MONGODB_SERVER: mongo
-      ME_CONFIG_MONGODB_ENABLE_ADMIN: "true"
-      ME_CONFIG_MONGODB_ADMINUSERNAME: root
-      ME_CONFIG_MONGODB_ADMINPASSWORD: 123
+      ME_CONFIG_MONGODB_URL: mongodb://mongo:27017/?replicaSet=rs0
       ME_CONFIG_BASICAUTH_USERNAME: root
       ME_CONFIG_BASICAUTH_PASSWORD: 123
     depends_on:
-      - mongodb
-    entrypoint: ["sh", "-c", "sleep 10 && tini -- /docker-entrypoint.sh mongo-express"]
+      mongodb:
+        condition: service_healthy
 
 networks:
   default:

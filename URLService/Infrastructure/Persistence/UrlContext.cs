@@ -23,6 +23,7 @@ namespace Infrastructure.Persistence
     );
 
     public DbSet<UrlEntry> UrlEntries => Set<UrlEntry>();
+    public DbSet<Sequence> Sequences => Set<Sequence>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -95,13 +96,11 @@ namespace Infrastructure.Persistence
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
       await SetAuditData();
-      await AdaptRowVersion();
       return await base.SaveChangesAsync(cancellationToken);
     }
 
     public async Task<int> SaveChangesNoAuditAsync(CancellationToken cancellationToken = default)
     {
-      await AdaptRowVersion();
       return await base.SaveChangesAsync(cancellationToken);
     }
 
@@ -135,25 +134,6 @@ namespace Infrastructure.Persistence
 
       var collectionName = entityType.GetCollectionName();
       return _mongoDatabase.GetCollection<T>(collectionName);
-    }
-
-    private Task AdaptRowVersion()
-    {
-      var auditEntries = ChangeTracker.Entries<IVersioning>();
-      foreach (var entityEntry in auditEntries.Where(x => x?.Entity is not null))
-      {
-        switch (entityEntry.State)
-        {
-          case EntityState.Added:
-            entityEntry.Entity.Version = 1;
-            break;
-          case EntityState.Modified:
-            entityEntry.OriginalValues[nameof(IVersioning.Version)] = entityEntry.Entity.Version;
-            entityEntry.Entity.Version += 1;
-            break;
-        }
-      }
-      return Task.CompletedTask;
     }
 
     private async Task SetAuditData()

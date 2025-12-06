@@ -2,9 +2,9 @@
 {
   public static class GetWeathersMapping
   {
-    public static WeatherDataDto ToDto(WeatherEntity entity) =>
+    public static GetWeathersDataDto ToDto(WeatherEntity entity) =>
       new(entity.Id, entity.Date, entity.TemperatureC, entity.Summary);
 
-    public static GetWeathersQuery ToQuery(this WeatherRequestDto request) => new(request.Days);
+    public static GetWeathersQuery ToQuery(this GetWeathersRequestDto request) => new(request.Days);
   }
 }

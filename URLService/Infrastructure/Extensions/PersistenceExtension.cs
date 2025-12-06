@@ -173,7 +173,11 @@ namespace Infrastructure.Extensions
           Code = "ltc",
           Expires = null,
         };
+
+        var sequence = new Sequence { Name = nameof(UrlEntry), CurrentValue = 1 };
+
         await context.AddAsync(seedEntity);
+        await context.AddAsync(sequence);
         await context.SaveChangesAsync();
       }
     }

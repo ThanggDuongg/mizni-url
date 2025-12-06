@@ -9,6 +9,8 @@ namespace WebAPI.Extensions
       var api = app.MapGroup($"{Common.API_VERSION}/api");
 
       api.MapExampleEndpoints();
+      api.MapUrlEntryEndpoints();
+      app.MapShortUrlRedirect();
 
       return app;
     }
