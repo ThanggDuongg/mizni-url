@@ -12,7 +12,10 @@ namespace WebAPI.Middlewares
       }
       catch (Exception ex)
       {
-        logger.LogError(ex, "Error: {Message}", ex.Message);
+        if (logger.IsEnabled(LogLevel.Error))
+        {
+          logger.LogError(ex, "Error: {Message}", ex.Message);
+        }
 
         context.Response.ContentType = "application/json";
 

@@ -1,5 +1,6 @@
 ﻿using Domain.Entities;
 using Infrastructure.Persistence;
+using Infrastructure.Persistence.Cache;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -38,6 +39,10 @@ namespace Infrastructure.Extensions
       );
 
       services.AddScoped<IUrlContext, UrlContext>();
+
+      services.AddSingleton<IRedisConnection, RedisConnection>();
+      services.AddSingleton<ICacheService, CacheService>();
+      services.AddSingleton<IHotKeyDetectionService, HotKeyDetectionService>();
 
       return services;
     }
