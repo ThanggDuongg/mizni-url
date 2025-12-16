@@ -1,6 +1,4 @@
-﻿using Domain.Entities;
-using Infrastructure.Persistence;
-using MongoDB.Driver;
+﻿using Application.Services.Interfaces;
 
 namespace Application.Features.UrlEntries.GetUrlEntry
 {
@@ -10,22 +8,11 @@ namespace Application.Features.UrlEntries.GetUrlEntry
   {
     public static async Task<string?> Handle(
       GetUrlEntryQuery query,
-      IUrlContext urlContext,
+      IUrlEntryService urlEntryService,
       CancellationToken cancellationToken
     )
     {
-      var collection = urlContext.GetCollection<UrlEntry>();
-
-      var filter = Builders<UrlEntry>.Filter.Eq(x => x.Code, query.Code);
-
-      var entry = await collection.Find(filter).FirstOrDefaultAsync(cancellationToken);
-
-      if (entry is null || (entry.Expires is not null && entry.Expires < DateTime.UtcNow))
-      {
-        return null;
-      }
-
-      return entry.OriginalUrl;
+      return await urlEntryService.GetByCodeAsync(query.Code, cancellationToken);
     }
   }
 }
