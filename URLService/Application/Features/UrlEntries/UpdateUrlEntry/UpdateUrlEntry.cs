@@ -1,5 +1,6 @@
 ﻿using Domain.Entities;
 using Infrastructure.Persistence;
+using Infrastructure.Persistence.Cache;
 using Microsoft.EntityFrameworkCore;
 
 namespace Application.Features.UrlEntries.UpdateUrlEntry
@@ -11,6 +12,7 @@ namespace Application.Features.UrlEntries.UpdateUrlEntry
     public static async Task Handle(
       UpdateUrlEntryCommand command,
       IUrlContext urlContext,
+      ICacheService cache,
       CancellationToken cancellationToken
     )
     {
@@ -30,6 +32,8 @@ namespace Application.Features.UrlEntries.UpdateUrlEntry
 
       await urlContext.UpdateAsync(entry);
       await urlContext.SaveChangesAsync(cancellationToken);
+
+      await cache.RemoveAsync(CacheKeyBuilder.Url(entry.Code), cancellationToken);
     }
   }
 }

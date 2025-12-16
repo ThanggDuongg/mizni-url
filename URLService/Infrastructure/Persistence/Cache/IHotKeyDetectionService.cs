@@ -7,5 +7,9 @@
     Task<List<(string Code, double Score)>> GetTopAsync(int topN);
 
     Task ResetZsetAsync();
+
+    Task ResetAsync(string code);
+
+    Task ResetAllAsync();
   }
 }

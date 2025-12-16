@@ -68,5 +68,39 @@ namespace Infrastructure.Persistence.Cache
     {
       return conn.GetDatabase().KeyDeleteAsync(CacheKeyBuilder.HotZSet());
     }
+
+    public async Task ResetAsync(string code)
+    {
+      var db = conn.GetDatabase();
+
+      var counterKey = CacheKeyBuilder.HotCounter(code);
+      var zsetKey = CacheKeyBuilder.HotZSet();
+
+      var batch = db.CreateBatch();
+
+      var delCounter = batch.KeyDeleteAsync(counterKey);
+      var zrem = batch.SortedSetRemoveAsync(zsetKey, code);
+
+      batch.Execute();
+
+      await Task.WhenAll(delCounter, zrem);
+    }
+
+    public async Task ResetAllAsync()
+    {
+      var db = conn.GetDatabase();
+      var server = conn.GetServer();
+
+      var batch = db.CreateBatch();
+      var deleteTasks = new List<Task> { batch.KeyDeleteAsync(CacheKeyBuilder.HotZSet()) };
+
+      foreach (var key in server.Keys(pattern: CacheKeyBuilder.HotCounter("*"), pageSize: 500))
+      {
+        deleteTasks.Add(batch.KeyDeleteAsync(key));
+      }
+
+      batch.Execute();
+      await Task.WhenAll(deleteTasks);
+    }
   }
 }
