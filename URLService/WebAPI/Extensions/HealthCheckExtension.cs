@@ -23,16 +23,22 @@ namespace WebAPI.Extensions
           {
             var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
 
-            logger.LogInformation("Health check status: {Status}", report.Status);
-
-            foreach (var entry in report.Entries)
+            if (logger.IsEnabled(LogLevel.Information))
             {
-              logger.LogDebug(
-                "Health check {Name}: {Status} - {Duration}ms",
-                entry.Key,
-                entry.Value.Status,
-                entry.Value.Duration.TotalMilliseconds
-              );
+              logger.LogInformation("Health check status: {Status}", report.Status);
+            }
+
+            if (logger.IsEnabled(LogLevel.Debug))
+            {
+              foreach (var entry in report.Entries)
+              {
+                logger.LogDebug(
+                  "Health check {Name}: {Status} - {Duration}ms",
+                  entry.Key,
+                  entry.Value.Status,
+                  entry.Value.Duration.TotalMilliseconds
+                );
+              }
             }
 
             await context.Response.WriteAsJsonAsync(

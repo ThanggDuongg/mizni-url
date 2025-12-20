@@ -25,7 +25,7 @@ builder
   .AddApiDocumentSupport()
   .AddApplicationHealthChecks();
 
-builder.Services.AddAntiforgerySupport().AddCorsPolicy();
+builder.Services.AddAntiforgerySupport().AddCorsPolicy().AddRateLimiting(builder.Environment);
 
 builder.Services.AddAuthentication();
 builder.Services.AddAuthorization();

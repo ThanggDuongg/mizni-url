@@ -10,7 +10,9 @@ namespace WebAPI.Endpoints
   {
     public static IEndpointRouteBuilder MapShortUrlRedirect(this IEndpointRouteBuilder app)
     {
-      app.MapGet("/{code}", GetUrlEntry).AllowAnonymous();
+      app.MapGet("/{code}", GetUrlEntry)
+        .AllowAnonymous()
+        .RequireRateLimiting(Policy.RateLimitRedirect);
 
       return app;
     }

@@ -16,6 +16,7 @@ namespace WebAPI.Extensions
         .UseCors()
         .UseHttpsRedirection()
         .UseAuthentication()
+        .UseRateLimiter()
         .UseMiddleware<AntiforgeryMiddleware>()
         .UseAuthorization()
         .UseMiniProfiler()

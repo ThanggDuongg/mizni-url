@@ -35,5 +35,10 @@
     {
       public const string NOT_FOUND = "Entity type={0}, id={1} is not found";
     }
+
+    public struct Policy
+    {
+      public const string RateLimitRedirect = "redirect-ip";
+    }
   }
 }
