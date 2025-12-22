@@ -1,4 +1,5 @@
-﻿using WebAPI.Middlewares;
+﻿using Microsoft.AspNetCore.HttpOverrides;
+using WebAPI.Middlewares;
 
 namespace WebAPI.Extensions
 {
@@ -10,11 +11,19 @@ namespace WebAPI.Extensions
     )
     {
       app.UseMiddleware<CorrelationIdMiddleware>()
+        .UseForwardedHeaders(
+          new ForwardedHeadersOptions
+          {
+            ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto,
+            KnownIPNetworks = { },
+            KnownProxies = { },
+          }
+        )
         .UseSecurityHeadersMiddleware()
         .UseMiddleware<ExceptionMiddleware>()
         .UseSerilogRequestLogging()
-        .UseCors()
         .UseHttpsRedirection()
+        .UseCors()
         .UseAuthentication()
         .UseRateLimiter()
         .UseMiddleware<AntiforgeryMiddleware>()
