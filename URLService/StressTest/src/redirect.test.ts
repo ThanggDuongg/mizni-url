@@ -1,16 +1,19 @@
-import { Options } from 'k6/options';
-import { prepareData, PrepareResult } from './prepare';
-import { redirectAndRateLimitTest } from './redirectRate';
+import { Options } from "k6/options";
+import { prepareData, PrepareResult } from "./prepare";
+import { redirectAndRateLimitTest } from "./redirectRate";
+import { scenarios } from "./scenarios";
+import { thresholds } from "./thresholds";
 
-const BASE_URL = __ENV.BASE_URL || 'http://localhost:5000';
+const BASE_URL = __ENV.BASE_URL || "http://localhost:5000";
+const MODE = __ENV.MODE || "steady"; // steady | burst | spike | soak
+const MULTI_IP = __ENV.MULTI_IP === "true";
 
 export const options: Options = {
-  vus: 50,
-  duration: '30s',
-  thresholds: {
-    rate_limited_requests: ['count>0'],
-    http_req_failed: ['rate<0.8'],
+  scenarios: {
+    [MODE]: scenarios![MODE],
   },
+
+  thresholds: thresholds[MODE],
 };
 
 export function setup(): PrepareResult {
@@ -18,5 +21,5 @@ export function setup(): PrepareResult {
 }
 
 export default function (data: PrepareResult) {
-  redirectAndRateLimitTest(BASE_URL, data.codes);
+  redirectAndRateLimitTest(BASE_URL, data.codes, MULTI_IP);
 }
