@@ -2,6 +2,8 @@
 using Application.Features.UrlEntries.DeleteUrlEntry;
 using Application.Features.UrlEntries.GetUrlEntry;
 using Application.Features.UrlEntries.UpdateUrlEntry;
+using Contracts.UrlEntries.CreateUrlEntry;
+using Contracts.UrlEntries.UpdateUrlEntry;
 using Wolverine;
 
 namespace WebAPI.Endpoints

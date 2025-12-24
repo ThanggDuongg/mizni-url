@@ -1,4 +1,6 @@
-﻿namespace Application.Features.Example.GetWeathers
+﻿using Contracts.Example.GetWeathers;
+
+namespace Application.Features.Example.GetWeathers
 {
   public class WeatherEntity
   {

@@ -1,4 +1,4 @@
-﻿namespace Application.Features.UrlEntries.CreateUrlEntry
+﻿namespace Contracts.UrlEntries.CreateUrlEntry
 {
   public sealed record CreateUrlEntryDataDto(
     string Id,

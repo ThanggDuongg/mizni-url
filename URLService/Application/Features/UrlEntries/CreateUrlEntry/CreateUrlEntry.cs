@@ -1,4 +1,5 @@
 ﻿using Application.Services.Interfaces;
+using Contracts.UrlEntries.CreateUrlEntry;
 using Domain.Entities;
 using Infrastructure.Persistence;
 

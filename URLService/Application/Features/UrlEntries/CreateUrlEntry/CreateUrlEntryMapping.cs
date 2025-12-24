@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Contracts.UrlEntries.CreateUrlEntry;
+using Domain.Entities;
 
 namespace Application.Features.UrlEntries.CreateUrlEntry
 {
