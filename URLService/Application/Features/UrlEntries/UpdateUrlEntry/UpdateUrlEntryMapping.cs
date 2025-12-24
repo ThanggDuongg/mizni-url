@@ -1,4 +1,6 @@
-﻿namespace Application.Features.UrlEntries.UpdateUrlEntry
+﻿using Contracts.UrlEntries.UpdateUrlEntry;
+
+namespace Application.Features.UrlEntries.UpdateUrlEntry
 {
   public static class UpdateUrlEntryMapping
   {

@@ -1,4 +1,5 @@
 ﻿using Application.Features.Example.GetWeathers;
+using Contracts.Example.GetWeathers;
 using Wolverine;
 
 namespace WebAPI.Endpoints

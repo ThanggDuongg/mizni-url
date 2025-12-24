@@ -1,4 +1,4 @@
-﻿namespace Application.Features.Example.GetWeathers
+﻿namespace Contracts.Example.GetWeathers
 {
   public class GetWeathersRequestDto
   {
