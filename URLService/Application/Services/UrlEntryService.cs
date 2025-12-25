@@ -1,5 +1,6 @@
 ﻿using Application.Background;
 using Application.Services.Interfaces;
+using Contracts.Cache;
 using Domain.Entities;
 using Infrastructure.Persistence;
 using Infrastructure.Persistence.Cache;
@@ -23,11 +24,16 @@ namespace Application.Services
         CacheKeyBuilder.Url(code),
         factory: async ct =>
         {
-          var collection = urlContext.GetCollection<UrlEntry>();
-          return await collection.Find(x => x.Code == code).FirstOrDefaultAsync(ct);
+          var entity = await urlContext
+            .GetCollection<UrlEntry>()
+            .Find(x => x.Code == code)
+            .FirstOrDefaultAsync(ct);
+
+          return entity is null ? null : new UrlCacheValue(entity.Code, entity.OriginalUrl);
         },
         cancellationToken
       );
+
       if (urlEntry is null)
       {
         return null;
