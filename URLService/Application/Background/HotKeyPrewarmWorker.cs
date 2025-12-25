@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Contracts.Cache;
+using Domain.Entities;
 using Infrastructure.Persistence;
 using Infrastructure.Persistence.Cache;
 using Microsoft.Extensions.DependencyInjection;
@@ -68,6 +69,7 @@ namespace Application.Background
       var collection = urlContext.GetCollection<UrlEntry>();
       var entries = await collection
         .Find(x => needPrewarmCodes.Contains(x.Code))
+        .Project(x => new UrlCacheValue(x.Code, x.OriginalUrl))
         .ToListAsync(stoppingToken);
 
       if (entries.Count > 0)

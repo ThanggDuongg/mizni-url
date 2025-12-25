@@ -1,4 +1,4 @@
-﻿using Domain.Entities.Abstracts;
+﻿using Contracts.Cache;
 using Microsoft.Extensions.Caching.Hybrid;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
@@ -15,10 +15,10 @@ namespace Infrastructure.Persistence.Cache
   {
     public async Task<T?> GetOrCreateAsync<T>(
       string key,
-      Func<CancellationToken, ValueTask<T>> factory,
+      Func<CancellationToken, ValueTask<T?>> factory,
       CancellationToken cancellationToken = default
     )
-      where T : BaseEntity
+      where T : ICacheValueModel
     {
       return await cache.GetOrCreateAsync(
         key: key,
@@ -35,18 +35,18 @@ namespace Infrastructure.Persistence.Cache
     }
 
     public async Task SetAsync<T>(
-      T entity,
+      T cacheValue,
       string key,
       bool isHot = false,
       CancellationToken cancellationToken = default
     )
-      where T : BaseEntity
+      where T : ICacheValueModel
     {
       var ttl = isHot ? cacheTtlSettings.Value.Hot : cacheTtlSettings.Value.Normal;
 
       await cache.SetAsync(
         key: key,
-        value: entity,
+        value: cacheValue,
         options: new HybridCacheEntryOptions
         {
           Expiration = TimeSpan.FromSeconds(ttl.DistributedTtlSeconds),
@@ -61,7 +61,7 @@ namespace Infrastructure.Persistence.Cache
       bool isHot,
       CancellationToken cancellationToken = default
     )
-      where T : BaseEntity
+      where T : ICacheValueModel
     {
       var ttl = isHot ? cacheTtlSettings.Value.Hot : cacheTtlSettings.Value.Normal;
 
