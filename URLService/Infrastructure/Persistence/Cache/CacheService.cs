@@ -1,4 +1,6 @@
-﻿using Contracts.Cache;
+﻿using System.Collections.Concurrent;
+using BloomFilter;
+using Contracts.Cache;
 using Microsoft.Extensions.Caching.Hybrid;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
@@ -9,10 +11,13 @@ namespace Infrastructure.Persistence.Cache
   public class CacheService(
     HybridCache cache,
     IRedisConnection redis,
+    IBloomFilter bloomFilter,
     IOptions<CacheTtlSettings> cacheTtlSettings,
     IOptions<CachePrewarmSettings> cachePrewarmSettings
   ) : ICacheService
   {
+    private readonly ConcurrentDictionary<string, DateTime> _negativeCacheExpiry = new();
+
     public async Task<T?> GetOrCreateAsync<T>(
       string key,
       Func<CancellationToken, ValueTask<T?>> factory,
@@ -20,7 +25,18 @@ namespace Infrastructure.Persistence.Cache
     )
       where T : ICacheValueModel
     {
-      return await cache.GetOrCreateAsync(
+      if (await bloomFilter.ContainsAsync(key))
+      {
+        if (_negativeCacheExpiry.TryGetValue(key, out var expiry) && expiry > DateTime.UtcNow)
+        {
+          return default;
+        }
+
+        // TODO: Create job to clear _negativeCacheExpiry
+        _negativeCacheExpiry.TryRemove(key, out _);
+      }
+
+      var cachedValue = await cache.GetOrCreateAsync(
         key: key,
         factory: factory,
         options: new HybridCacheEntryOptions
@@ -32,6 +48,23 @@ namespace Infrastructure.Persistence.Cache
         },
         cancellationToken: cancellationToken
       );
+
+      if (cachedValue is null)
+      {
+        await RemoveAsync(key, cancellationToken);
+
+        await bloomFilter.AddAsync(key);
+        var expiryTime = DateTime.UtcNow.AddSeconds(
+          cacheTtlSettings.Value.Negative.LocalTtlSeconds
+        );
+        _negativeCacheExpiry[key] = expiryTime;
+      }
+      else
+      {
+        _negativeCacheExpiry.TryRemove(key, out _);
+      }
+
+      return cachedValue;
     }
 
     public async Task SetAsync<T>(
@@ -103,6 +136,19 @@ namespace Infrastructure.Persistence.Cache
       await Task.WhenAll(ttlTasks.Values);
 
       return ttlTasks.ToDictionary(x => x.Key, x => x.Value.Result);
+    }
+
+    public void CleanupNegativeCache()
+    {
+      var now = DateTime.UtcNow;
+
+      foreach (var item in _negativeCacheExpiry)
+      {
+        if (item.Value <= now)
+        {
+          _negativeCacheExpiry.TryRemove(item.Key, out _);
+        }
+      }
     }
   }
 }
