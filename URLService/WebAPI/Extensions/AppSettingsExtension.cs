@@ -16,6 +16,10 @@
       services.Configure<CachePrewarmSettings>(
         configuration.GetSection(nameof(CachePrewarmSettings))
       );
+      services.Configure<BloomFilterSettings>(
+        configuration.GetSection(nameof(BloomFilterSettings))
+      );
+
       return services;
     }
   }

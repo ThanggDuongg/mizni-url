@@ -30,5 +30,7 @@ namespace Infrastructure.Persistence.Cache
     Task RemoveAsync(string key, CancellationToken cancellationToken = default);
 
     Task<Dictionary<RedisKey, TimeSpan?>> GetTtlsAsync(IReadOnlyCollection<RedisKey> keys);
+
+    void CleanupNegativeCache();
   }
 }

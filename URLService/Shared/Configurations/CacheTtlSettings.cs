@@ -6,6 +6,8 @@
 
     public CacheDuration Hot { get; set; } = default!;
 
+    public CacheDuration Negative { get; set; } = default!;
+
     public int HotWindowSeconds { get; set; }
 
     public int HotThreshold { get; set; }
