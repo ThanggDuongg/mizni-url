@@ -11,10 +11,10 @@ namespace Application.Features.UrlEntries.CreateUrlEntry
         .Must(url => Uri.TryCreate(url, UriKind.Absolute, out _))
         .WithMessage("Invalid URL format");
 
-      RuleFor(x => x.Expires)
+      RuleFor(x => x.ExpiredAt)
         .GreaterThan(DateTime.UtcNow)
-        .When(x => x.Expires.HasValue)
-        .WithMessage("Expires must be in the future");
+        .When(x => x.ExpiredAt.HasValue)
+        .WithMessage("ExpiredAt must be in the future");
     }
   }
 }

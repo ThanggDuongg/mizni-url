@@ -1,6 +1,6 @@
 ﻿namespace Shared.Configurations
 {
-  public class BloomFilterSettings
+  public sealed class BloomFilterSettings
   {
     public string Name { get; set; } = default!;
 

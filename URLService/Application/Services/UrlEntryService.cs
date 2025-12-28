@@ -20,13 +20,14 @@ namespace Application.Services
       CancellationToken cancellationToken = default
     )
     {
+      var currentUtc = DateTime.UtcNow;
       var urlEntry = await urlEntryCacheService.GetOrCreateAsync(
         CacheKeyBuilder.Url(code),
         factory: async ct =>
         {
           var entity = await urlContext
             .GetCollection<UrlEntry>()
-            .Find(x => x.Code == code)
+            .Find(x => x.Code == code && !x.IsDeleted && x.ExpiredAt > currentUtc)
             .FirstOrDefaultAsync(ct);
 
           return entity is null ? null : new UrlCacheValue(entity.Code, entity.OriginalUrl);

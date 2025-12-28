@@ -1,6 +1,6 @@
 ﻿namespace Shared.Configurations
 {
-  public class CacheTtlSettings
+  public sealed class CacheTtlSettings
   {
     public CacheDuration Normal { get; set; } = default!;
 
@@ -13,7 +13,7 @@
     public int HotThreshold { get; set; }
   }
 
-  public class CacheDuration
+  public sealed class CacheDuration
   {
     public int DistributedTtlSeconds { get; set; }
 

@@ -176,7 +176,7 @@ namespace Infrastructure.Extensions
         {
           OriginalUrl = demoUrl,
           Code = "ltc",
-          Expires = null,
+          ExpiredAt = null,
         };
 
         var sequence = new Sequence { Name = nameof(UrlEntry), CurrentValue = 1 };

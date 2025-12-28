@@ -4,6 +4,6 @@
   {
     public string OriginalUrl { get; set; } = default!;
 
-    public DateTime? Expires { get; set; }
+    public DateTime? ExpiredAt { get; set; }
   }
 }

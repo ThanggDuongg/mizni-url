@@ -5,7 +5,7 @@ using Infrastructure.Persistence;
 
 namespace Application.Features.UrlEntries.CreateUrlEntry
 {
-  public sealed record CreateUrlEntryCommand(string OriginalUrl, DateTime? Expires);
+  public sealed record CreateUrlEntryCommand(string OriginalUrl, DateTime? ExpiredAt);
 
   public static class CreateUrlEntryCommandHandler
   {

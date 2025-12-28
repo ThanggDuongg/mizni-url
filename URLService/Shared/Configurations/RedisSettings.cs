@@ -1,6 +1,6 @@
 ﻿namespace Shared.Configurations
 {
-  public class RedisSettings
+  public sealed class RedisSettings
   {
     public string ConnectionString { get; set; } = string.Empty;
 

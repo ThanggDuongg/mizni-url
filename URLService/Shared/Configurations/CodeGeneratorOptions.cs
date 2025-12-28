@@ -1,6 +1,6 @@
 ﻿namespace Shared.Configurations
 {
-  public class CodeGeneratorOptions
+  public sealed class CodeGeneratorOptions
   {
     public long Offset { get; set; }
     public long XorKey { get; set; }

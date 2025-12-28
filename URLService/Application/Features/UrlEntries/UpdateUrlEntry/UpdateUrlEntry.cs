@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Features.UrlEntries.UpdateUrlEntry
 {
-  public sealed record UpdateUrlEntryCommand(string Code, DateTime? Expires, long Version);
+  public sealed record UpdateUrlEntryCommand(string Code, DateTime? ExpiredAt, long Version);
 
   public static class UpdateUrlEntryCommandHandler
   {
@@ -22,12 +22,12 @@ namespace Application.Features.UrlEntries.UpdateUrlEntry
           .SingleOrDefaultAsync(x => x.Code == command.Code, cancellationToken)
         ?? throw new UrlEntryNotFoundException(command.Code);
 
-      if (entry.Expires == command.Expires)
+      if (entry.ExpiredAt == command.ExpiredAt)
       {
         return;
       }
 
-      entry.Expires = command.Expires;
+      entry.ExpiredAt = command.ExpiredAt;
       entry.Version = command.Version;
 
       await urlContext.UpdateAsync(entry);

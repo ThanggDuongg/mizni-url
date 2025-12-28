@@ -19,6 +19,10 @@
       services.Configure<BloomFilterSettings>(
         configuration.GetSection(nameof(BloomFilterSettings))
       );
+      services.Configure<BackgroundJobSettings>(options =>
+      {
+        configuration.GetSection(nameof(BackgroundJobSettings)).Bind(options.Jobs);
+      });
 
       return services;
     }
