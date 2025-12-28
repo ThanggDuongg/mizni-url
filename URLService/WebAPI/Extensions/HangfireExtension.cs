@@ -41,9 +41,11 @@ namespace WebAPI.Extensions
             }
           )
       );
+      GlobalJobFilters.Filters.Add(new AutomaticRetryAttribute { Attempts = 3 });
 
       services.AddHangfireServer();
       services.AddScoped<IRecurringJob, BloomFilterCleanupJob>();
+      services.AddScoped<IRecurringJob, DeleteExpiredUrlEntriesJob>();
 
       return services;
     }
