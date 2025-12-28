@@ -32,7 +32,6 @@ namespace Infrastructure.Persistence.Cache
           return default;
         }
 
-        // TODO: Create job to clear _negativeCacheExpiry
         _negativeCacheExpiry.TryRemove(key, out _);
       }
 

@@ -9,6 +9,7 @@ builder
   .AddHttpContextAccessor()
   .AddEndpointsApiExplorer()
   .AddPersistenceConfiguration()
+  .AddHangfireInfrastructure(builder.Configuration)
   .AddCacheConfiguration(builder.Configuration)
   .AddControllers()
   .AddJsonOptions(options =>

@@ -1,6 +1,6 @@
 ﻿namespace Shared.Configurations
 {
-  public class MongoDbSettings
+  public sealed class MongoDbSettings
   {
     public string ConnectionString { get; set; } = string.Empty;
 

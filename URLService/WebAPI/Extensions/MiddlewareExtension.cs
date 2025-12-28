@@ -30,6 +30,7 @@ namespace WebAPI.Extensions
         .UseRateLimiter()
         .UseMiddleware<AntiforgeryMiddleware>()
         .UseAuthorization()
+        .UseHangfire()
         .UseMiniProfiler()
         .UseMiniLog(env.ContentRootPath)
         .UseCacheControlHeaderMiddleware();
