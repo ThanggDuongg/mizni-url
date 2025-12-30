@@ -11,7 +11,6 @@ namespace WebAPI.Extensions
     )
     {
       app.UseMiddleware<CorrelationIdMiddleware>()
-#if DEBUG
         .UseForwardedHeaders(
           new ForwardedHeadersOptions
           {
@@ -20,7 +19,6 @@ namespace WebAPI.Extensions
             KnownProxies = { },
           }
         )
-#endif
         .UseSecurityHeadersMiddleware()
         .UseMiddleware<ExceptionMiddleware>()
         .UseSerilogRequestLogging()
