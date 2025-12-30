@@ -27,7 +27,9 @@ namespace Application.Services
         {
           var entity = await urlContext
             .GetCollection<UrlEntry>()
-            .Find(x => x.Code == code && !x.IsDeleted && x.ExpiredAt > currentUtc)
+            .Find(x =>
+              x.Code == code && !x.IsDeleted && (x.ExpiredAt == null || x.ExpiredAt > currentUtc)
+            )
             .FirstOrDefaultAsync(ct);
 
           return entity is null ? null : new UrlCacheValue(entity.Code, entity.OriginalUrl);
