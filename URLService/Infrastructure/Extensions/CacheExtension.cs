@@ -22,11 +22,7 @@ namespace Infrastructure.Extensions
 
       services.AddSingleton<IConnectionMultiplexer>(_ =>
       {
-        var config = ConfigurationOptions.Parse(redisSettings.ConnectionString);
-        config.AbortOnConnectFail = false;
-        config.AllowAdmin = true;
-        config.DefaultDatabase = redisSettings.DefaultDatabase;
-
+        var config = BuildRedisConfigurationOptions(redisSettings);
         return ConnectionMultiplexer.Connect(config);
       });
 
@@ -35,7 +31,9 @@ namespace Infrastructure.Extensions
       services.AddMemoryCache();
       services.AddStackExchangeRedisCache(options =>
       {
-        options.Configuration = redisSettings.ConnectionString;
+        var config = BuildRedisConfigurationOptions(redisSettings);
+
+        options.ConfigurationOptions = config;
         options.InstanceName = redisSettings.InstanceName;
       });
       services.AddHybridCache(cacheOptions =>
@@ -48,6 +46,30 @@ namespace Infrastructure.Extensions
       });
 
       return services;
+    }
+
+    private static ConfigurationOptions BuildRedisConfigurationOptions(RedisSettings settings)
+    {
+#if DEBUG
+      var config = ConfigurationOptions.Parse(settings.ConnectionString);
+      config.AbortOnConnectFail = false;
+      config.AllowAdmin = true;
+      config.DefaultDatabase = settings.DefaultDatabase;
+      return config;
+#endif
+
+      var uri = new Uri(settings.ConnectionString);
+
+      return new ConfigurationOptions
+      {
+        AbortOnConnectFail = false,
+        AllowAdmin = true,
+        DefaultDatabase = settings.DefaultDatabase,
+        Ssl = false,
+        User = string.IsNullOrEmpty(uri.UserInfo) ? "default" : uri.UserInfo.Split(':')[0],
+        Password = string.IsNullOrEmpty(uri.UserInfo) ? null : uri.UserInfo.Split(':')[1],
+        EndPoints = { { uri.Host, uri.Port } },
+      };
     }
   }
 }
