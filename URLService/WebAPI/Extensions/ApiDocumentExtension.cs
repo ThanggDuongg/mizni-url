@@ -25,22 +25,16 @@ namespace WebAPI.Extensions
       return services;
     }
 
-    public static IEndpointRouteBuilder MapApiDocumentSupport(
-      this IEndpointRouteBuilder app,
-      IWebHostEnvironment env
-    )
+    public static IEndpointRouteBuilder MapApiDocumentSupport(this IEndpointRouteBuilder app)
     {
-      if (env.IsDevelopment())
+      app.MapOpenApi();
+      app.MapScalarApiReference(options =>
       {
-        app.MapOpenApi();
-        app.MapScalarApiReference(options =>
-        {
-          options
-            .WithTitle(ApiDocument.TITLE)
-            .WithTheme(ScalarTheme.Default)
-            .WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.HttpClient);
-        });
-      }
+        options
+          .WithTitle(ApiDocument.TITLE)
+          .WithTheme(ScalarTheme.Default)
+          .WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.HttpClient);
+      });
 
       return app;
     }

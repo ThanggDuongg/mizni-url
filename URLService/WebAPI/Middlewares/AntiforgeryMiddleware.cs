@@ -10,14 +10,6 @@ namespace WebAPI.Middlewares
     ILogger<AntiforgeryMiddleware> logger
   )
   {
-    private static readonly string[] _excludedPrefixes =
-    {
-      "/scalar",
-      "/health",
-      "/grid",
-      "/search",
-    };
-
     public async Task InvokeAsync(HttpContext context)
     {
       if (ShouldSkipAntiforgeryValidation(context))
@@ -62,7 +54,9 @@ namespace WebAPI.Middlewares
       }
 
       if (
-        _excludedPrefixes.Any(prefix => path.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
+        ExcludedRoutePrefixes.Any(prefix =>
+          path.StartsWith(prefix, StringComparison.OrdinalIgnoreCase)
+        )
       )
       {
         return true;

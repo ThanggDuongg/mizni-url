@@ -5,16 +5,8 @@ namespace WebAPI.Extensions
 {
   public static class MiniProfilerExtension
   {
-    public static IServiceCollection AddMiniProfilerSupport(
-      this IServiceCollection services,
-      IWebHostEnvironment env
-    )
+    public static IServiceCollection AddMiniProfilerSupport(this IServiceCollection services)
     {
-      if (!env.IsDevelopment())
-      {
-        return services;
-      }
-
       services
         .AddMiniProfiler(options =>
         {

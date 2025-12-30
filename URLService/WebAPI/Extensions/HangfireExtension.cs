@@ -54,7 +54,11 @@ namespace WebAPI.Extensions
     {
       app.UseHangfireDashboard(
         "/jobs",
-        new DashboardOptions { Authorization = [new HangfireAuthorizationFilter()] }
+        new DashboardOptions
+        {
+          Authorization = [new HangfireAuthorizationFilter()],
+          IgnoreAntiforgeryToken = true,
+        }
       );
       app.RegisterAllRecurringJobs();
 

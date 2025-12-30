@@ -40,5 +40,16 @@
     {
       public const string RateLimitRedirect = "redirect-ip";
     }
+
+    public static readonly string[] ExcludedRoutePrefixes =
+    [
+      "/scalar",
+      "/health",
+      "/grid",
+      "/search",
+      "/jobs",
+      "/profiler",
+      "/logs",
+    ];
   }
 }

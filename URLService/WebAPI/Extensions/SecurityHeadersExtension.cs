@@ -31,8 +31,14 @@ namespace WebAPI.Extensions
         });
 
       applicationBuilder.UseWhen(
-        context => !context.Request.Path.StartsWithSegments("/scalar"),
-        app => app.UseSecurityHeaders(policy)
+        context =>
+          !ExcludedRoutePrefixes.Any(prefix =>
+            context.Request.Path.StartsWithSegments(prefix, StringComparison.OrdinalIgnoreCase)
+          ),
+        app =>
+        {
+          app.UseSecurityHeaders(policy);
+        }
       );
 
       return applicationBuilder;

@@ -11,6 +11,22 @@ obj/
 *.sln.docstates
 *.userprefs
 
+# Project-specific exclusions
+URLService/Data/
+URLService/StressTest/
+URLService/WebAPI/logs/
+*.http
+.env
+.env.local
+docker-compose*.yml
+README.md
+LICENSE
+.git/
+.github/
+.gitignore
+.dockerignore
+Dockerfile
+
 # Build results
 [Dd]ebug/
 [Dd]ebugPublic/

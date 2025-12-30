@@ -21,10 +21,7 @@ builder.AddSerilogLogging().AddWolverineFx();
 
 builder.Services.AddApplicationServices();
 
-builder
-  .Services.AddMiniProfilerSupport(builder.Environment)
-  .AddApiDocumentSupport()
-  .AddApplicationHealthChecks();
+builder.Services.AddMiniProfilerSupport().AddApiDocumentSupport().AddApplicationHealthChecks();
 
 builder
   .Services.AddAntiforgerySupport()
@@ -46,7 +43,9 @@ await app.EnsureDatabaseCreatedAsync();
 
 app.UseApplicationMiddlewares(app.Environment);
 
-app.MapApiDocumentSupport(app.Environment);
+app.UseRouting();
+
+app.MapApiDocumentSupport();
 app.MapApplicationHealthChecks();
 app.MapApiGroups();
 
