@@ -1,10 +1,10 @@
 # Mizni URL
 
-Mizni URL is a tool to shorten a long link and create a short URL easy to share on sites, chat and emails. Track short URL traffic and manage your links.
+Mizni URL is a tool to shorten a long link and create a short URL easy to share on sites, chat and emails. ~~Track short URL traffic and manage your links.~~
 
 ## Architecture
 
-Microservices-ready architecture with Clean Architecture principles:
+~~Microservices-ready~~ architecture with Clean Architecture principles:
 
 ```
 mizni-url/
@@ -12,9 +12,9 @@ mizni-url/
 │   ├── Domain/              # Core entities and interfaces
 │   ├── Application/         # CQRS handlers, business logic
 │   ├── Infrastructure/      # MongoDB, Redis, Hangfire
-│   ├── WebAPI/             # REST API endpoints
-│   └── StressTest/         # K6 performance testing
-└── Contracts/              # Shared contracts between services
+│   ├── WebAPI/              # REST API endpoints
+│   └── StressTest/          # K6 performance testing
+└── Contracts/               # Shared contracts between services
 ```
 
 **Clean Architecture Layers:**
@@ -74,6 +74,6 @@ mizni-url/
 
 ## TODO
 
-- [ ] **UserService** - Authentication and user-owned URLs
-- [ ] **Gateway** - YARP reverse proxy for service routing
-- [ ] **AnalyticService** - Advanced traffic analytics and link management dashboard
+- [ ] ~~**UserService** - Authentication and user-owned URLs~~
+- [ ] ~~**Gateway** - YARP reverse proxy for service routing~~
+- [ ] ~~**AnalyticService** - Advanced traffic analytics and link management dashboard~~
